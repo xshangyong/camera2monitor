@@ -1,5 +1,5 @@
-./db/*.*
-./incremental_db/*.*
+db/
+incremental_db/
 *.cdf
 *.done
 *.pin
@@ -10,3 +10,4 @@
 *.smsg
 *.sof
 *.summary
+*.txt
