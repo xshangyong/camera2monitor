@@ -1,3 +1,9 @@
+// 	Build repository on github
+//	https address : https://github.com/xshangyong/camera2monitor.git
+//	ssh address   :	git@github.com:xshangyong/camera2monitor.git
+//  top module : vga_module 
+//	2016.2.28  XuShangyong
+
 module vga_module
 (
 	CLK, 
