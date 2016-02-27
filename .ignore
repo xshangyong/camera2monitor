@@ -1,0 +1,12 @@
+./db/*.*
+./incremental_db/*.*
+*.cdf
+*.done
+*.pin
+*.pof
+*.qpf
+*.qsf
+*.rpt
+*.smsg
+*.sof
+*.summary
