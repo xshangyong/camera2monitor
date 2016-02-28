@@ -22,6 +22,15 @@ module reset_gen
 	reg			rst_100b = 0;
 	
 	wire		rst_use;
+// generate a low valid rst signal per 5s
+	reg			rst_freq = 1;
+	reg			rst_freq_1p = 1;
+	reg[1:0]	rst_mode = 0; // 0 for 3s,1 for 4s,2 for 5s, 4 for 6s;
+	reg[31:0]	cnt_10ns = 0; // 100_000_000 for 1s
+
+	
+	
+	
 	always @(posedge clk_100) begin
 		if(cnt_init == 32'd100) begin
 			cnt_init <= cnt_init;
@@ -33,6 +42,7 @@ module reset_gen
 			rst_init <= 0;
 		end
 	end	
+
 
 	always @(posedge clk_100) begin
 		if(!rst_n) begin
@@ -50,7 +60,75 @@ module reset_gen
 			rst <= 1;
 		end
 	end
-	assign rst_use = rst & rst_init;
+
+
+
+	always @(posedge clk_100) begin
+		rst_freq_1p <= rst_freq;
+		if(rst_freq && !rst_freq_1p) begin
+			rst_mode <= rst_mode;
+		end
+	end
+	always @(posedge clk_100) begin
+		case(rst_mode)
+			0 : begin
+				if(rst_freq == 1 && cnt_10ns >= 32'd100_000_000) begin
+					rst_freq <= ~rst_freq;
+					cnt_10ns <= 0;
+				end
+				else if(rst_freq == 0 && cnt_10ns >= 32'd100_000_000) begin
+					rst_freq <= ~rst_freq;
+					cnt_10ns <= 0;
+				end
+				else begin
+					cnt_10ns <= cnt_10ns + 1;
+				end
+			end
+			1 : begin
+				if(rst_freq == 1 && cnt_10ns >= 32'd400_000_000) begin
+					rst_freq <= ~rst_freq;
+					cnt_10ns <= 0;
+				end
+				else if(rst_freq == 0 && cnt_10ns >= 32'd100_000_000) begin
+					rst_freq <= ~rst_freq;
+					cnt_10ns <= 0;
+				end
+				else begin
+					cnt_10ns <= cnt_10ns + 1;
+				end		
+			end
+			2 : begin
+				if(rst_freq == 1 && cnt_10ns >= 32'd500_000_000) begin
+					rst_freq <= ~rst_freq;
+					cnt_10ns <= 0;
+				end
+				else if(rst_freq == 0 && cnt_10ns >= 32'd100_000_000) begin
+					rst_freq <= ~rst_freq;
+					cnt_10ns <= 0;
+				end
+				else begin
+					cnt_10ns <= cnt_10ns + 1;
+				end			
+			end
+			3 : begin
+				if(rst_freq == 1 && cnt_10ns >= 32'd600_000_000) begin
+					rst_freq <= ~rst_freq;
+					cnt_10ns <= 0;
+				end
+				else if(rst_freq == 0 && cnt_10ns >= 32'd100_000_000) begin
+					rst_freq <= ~rst_freq;
+					cnt_10ns <= 0;
+				end
+				else begin
+					cnt_10ns <= cnt_10ns + 1;
+				end		
+			end
+		endcase
+	end
+	
+	
+	
+	assign rst_use = rst_freq & rst_init;
 	
 	always @(posedge clk_100) begin
 		rst_100b <= rst_use;

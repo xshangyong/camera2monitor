@@ -140,11 +140,11 @@ module vga_module
 
 	assign led_o1 = led_r1;
 	assign led_o2 = led_r2;
-	assign led_o3 = led_r3;
+	assign led_o3 = 0;
 
 	reg			start_wrfifoA = 0;
 	reg[19:0]	test_rdsdram = 0;
-
+	reg[31:0]	cnt_vsyn_neg = 0;
 	clk_100m inst_100m(
 	    .inclk0( CLK ),    // input - from top
 		.c0( clk_100M )   // to vga
@@ -398,6 +398,21 @@ module vga_module
 	   end
 	 end
 	 
+	 
+	always@(posedge clk_100M)begin
+		if(VSYNC_Sig_d1 == 0 && VSYNC_Sig == 1) begin
+			cnt_vsyn_neg <= cnt_vsyn_neg + 1;	
+		end
+		
+		if(cnt_vsyn_neg[4] == 1) begin
+			led_r1 <= ~led_r1;
+		end
+		if(wr_sdram_add[12:10] == 3'b100) begin  //5000 
+			led_r2 = ~led_r2;
+		end
+	end
+	 
+	/*
 	 always@(posedge CLK)begin
 		if(ps2_done_r == 1) begin
 			if(ps2_break_r == 2'b01) begin
@@ -412,7 +427,7 @@ module vga_module
 		   end
 		end
 	 end
-	 
+	*/
 	 always@(posedge clk_100M)begin
 		  VSYNC_Sig<= VSYNC_Sig_d1;
 		  HSYNC_Sig<= HSYNC_Sig_d1;
