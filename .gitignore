@@ -12,3 +12,4 @@ incremental_db/
 *.summary
 *.txt
 *.qip
+*.bak
