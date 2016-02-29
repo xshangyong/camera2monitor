@@ -193,7 +193,8 @@ module vga_module
 	// read sdram, rd_sdram_req high means read begins,ack high means read finished 
 	// start when wr_sdram_finish == 1 && vsync negadge
 	reg		wr_en;
-	reg 	rd_en;
+	wire 	rd_en;
+	/*
 	always@(posedge clk_133M or negedge rst_133)begin
 		if(!rst_133) begin
 			rd_en <= 0;
@@ -208,7 +209,9 @@ module vga_module
 			rd_en <= rd_en;
 		end
 	end
-	
+	*/
+	//  && (rd_sdram_add[21:9]<=400)
+	assign rd_en = ((work_st == W_RDDAT) && (rd_sdram_add[21:9]==0) ) ? 1 : 0;
 	always@(posedge clk_133M or negedge rst_133)begin
 		if(!rst_133) begin
 			wr_en <= 0;
@@ -400,15 +403,23 @@ module vga_module
 	 
 	 
 	always@(posedge clk_100M)begin
-		if(VSYNC_Sig_d1 == 0 && VSYNC_Sig == 1) begin
-			cnt_vsyn_neg <= cnt_vsyn_neg + 1;	
+		if(!rst_100) begin
+			led_r1 <= 0;
+			led_r2 <= 0;
+			cnt_vsyn_neg <= 0;
 		end
-		
-		if(cnt_vsyn_neg[4] == 1) begin
-			led_r1 <= ~led_r1;
-		end
-		if(wr_sdram_add[12:10] == 3'b100) begin  //5000 
-			led_r2 = ~led_r2;
+		else begin
+			if(VSYNC_Sig_d1 == 0 && VSYNC_Sig == 1) begin
+				cnt_vsyn_neg <= cnt_vsyn_neg + 1;	
+			end
+			
+			if(cnt_vsyn_neg[4] == 1) begin
+				led_r1 <= ~led_r1;
+			end
+			
+			if(wr_sdram_add == 24'h10000) begin
+				led_r2 = 1;
+			end
 		end
 	end
 	 
