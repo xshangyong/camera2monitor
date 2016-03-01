@@ -19,6 +19,7 @@ set_location_assignment PIN_D8 -to ps2_clk_i
 set_location_assignment PIN_J1 -to led_o1
 set_location_assignment PIN_J2 -to led_o2
 set_location_assignment PIN_K1 -to led_o3
+set_location_assignment PIN_K2 -to led_o4
 set_location_assignment	PIN_E6	-to Green_Sig
 set_location_assignment	PIN_D5	-to Blue_Sig
 set_location_assignment	PIN_C6	-to Red_Sig

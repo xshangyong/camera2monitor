@@ -19,6 +19,7 @@ module vga_module
 	led_o1,
 	led_o2,
 	led_o3,
+	led_o4,
 	sdram_data,
 	sdram_addr,
 	sdram_clk,
@@ -40,6 +41,7 @@ module vga_module
 	output 	led_o1;
 	output 	led_o2;
 	output 	led_o3;
+	output 	led_o4;
 	// vga
 	output reg 	VSYNC_Sig;
 	output reg 	HSYNC_Sig;
@@ -87,6 +89,7 @@ module vga_module
 	reg				led_r1 = 0;
 	reg				led_r2 = 0;
 	reg				led_r3 = 0;
+	reg				led_r4 = 0;
 	reg[7:0]		rom_radd_cnt = 0;
 	reg[7:0]		rom_cadd_cnt = 0;
 	reg[7:0]		rd_rom_radd = 0;
@@ -140,20 +143,22 @@ module vga_module
 
 	assign led_o1 = led_r1;
 	assign led_o2 = led_r2;
-	assign led_o3 = 0;
+	assign led_o3 = led_r3;
+	assign led_o4 = 1;
 
 	reg			start_wrfifoA = 0;
 	reg[19:0]	test_rdsdram = 0;
 	reg[31:0]	cnt_vsyn_neg = 0;
 	clk_100m inst_100m(
 	    .inclk0( CLK ),    // input - from top
-		.c0( clk_100M )   // to vga
+//		.c0(  ),  //  clk_100M = 25MHz
+		.c1( clk_133M )	//	 clk_133M = 40MHz
 	);
-
-	pll_133 inst_133m(
-	    .inclk0( clk_100M ),    // pll100
-		.c0( clk_133M )   	// 	to sdram
-	);	 	
+	assign clk_100M = clk_133M;
+//	pll_133 inst_133m(
+//	    .inclk0( clk_100M ),    // pll100
+//		.c0( clk_133M )   	// 	to sdram
+//	);	 	
 	 /**************************************/
 	reset_gen inst_rst(
 		.clk_100	(clk_100M),
@@ -404,8 +409,10 @@ module vga_module
 	 
 	always@(posedge clk_100M)begin
 		if(!rst_100) begin
-			led_r1 <= 0;
-			led_r2 <= 0;
+			led_r1 <= 1;
+			led_r2 <= 1;
+			led_r3 <= 1;
+			led_r4 <= 1;
 			cnt_vsyn_neg <= 0;
 		end
 		else begin
@@ -417,8 +424,16 @@ module vga_module
 				led_r1 <= ~led_r1;
 			end
 			
+			if(wr_sdram_add == 24'h400) begin
+				led_r2 = 0;
+			end
+			
+			if(wr_sdram_add == 24'h5000) begin
+				led_r3 = 0;
+			end
+			
 			if(wr_sdram_add == 24'h10000) begin
-				led_r2 = 1;
+				led_r4 = 0;
 			end
 		end
 	end

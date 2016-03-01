@@ -66,17 +66,17 @@ module reset_gen
 	always @(posedge clk_100) begin
 		rst_freq_1p <= rst_freq;
 		if(rst_freq && !rst_freq_1p) begin
-			rst_mode <= rst_mode;
+			rst_mode <= ~rst_mode;
 		end
 	end
 	always @(posedge clk_100) begin
 		case(rst_mode)
 			0 : begin
-				if(rst_freq == 1 && cnt_10ns >= 32'd220_000_013) begin
+				if(rst_freq == 1 && cnt_10ns >= 32'd80_000_013) begin
 					rst_freq <= ~rst_freq;
 					cnt_10ns <= 0;
 				end
-				else if(rst_freq == 0 && cnt_10ns >= 32'd100_000_000) begin
+				else if(rst_freq == 0 && cnt_10ns >= 32'd40_000_000) begin
 					rst_freq <= ~rst_freq;
 					cnt_10ns <= 0;
 				end
@@ -85,11 +85,11 @@ module reset_gen
 				end
 			end
 			1 : begin
-				if(rst_freq == 1 && cnt_10ns >= 32'd200_000_000) begin
+				if(rst_freq == 1 && cnt_10ns >= 32'd90_000_000) begin
 					rst_freq <= ~rst_freq;
 					cnt_10ns <= 0;
 				end
-				else if(rst_freq == 0 && cnt_10ns >= 32'd100_000_000) begin
+				else if(rst_freq == 0 && cnt_10ns >= 32'd40_000_000) begin
 					rst_freq <= ~rst_freq;
 					cnt_10ns <= 0;
 				end
@@ -98,11 +98,11 @@ module reset_gen
 				end		
 			end
 			2 : begin
-				if(rst_freq == 1 && cnt_10ns >= 32'd300_000_000) begin
+				if(rst_freq == 1 && cnt_10ns >= 32'd100_000_000) begin
 					rst_freq <= ~rst_freq;
 					cnt_10ns <= 0;
 				end
-				else if(rst_freq == 0 && cnt_10ns >= 32'd100_000_000) begin
+				else if(rst_freq == 0 && cnt_10ns >= 32'd40_000_000) begin
 					rst_freq <= ~rst_freq;
 					cnt_10ns <= 0;
 				end
@@ -111,11 +111,11 @@ module reset_gen
 				end			
 			end
 			3 : begin
-				if(rst_freq == 1 && cnt_10ns >= 32'd400_000_000) begin
+				if(rst_freq == 1 && cnt_10ns >= 32'd110_000_000) begin
 					rst_freq <= ~rst_freq;
 					cnt_10ns <= 0;
 				end
-				else if(rst_freq == 0 && cnt_10ns >= 32'd100_000_000) begin
+				else if(rst_freq == 0 && cnt_10ns >= 32'd40_000_000) begin
 					rst_freq <= ~rst_freq;
 					cnt_10ns <= 0;
 				end
