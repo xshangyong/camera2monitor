@@ -13,3 +13,4 @@ incremental_db/
 *.txt
 *.qip
 *.bak
+*.ppf
