@@ -149,16 +149,16 @@ module vga_module
 	reg			start_wrfifoA = 0;
 	reg[19:0]	test_rdsdram = 0;
 	reg[31:0]	cnt_vsyn_neg = 0;
+	wire		clk_tmp80M;
 	clk_100m inst_100m(
 	    .inclk0( CLK ),    // input - from top
-//		.c0(  ),  //  clk_100M = 25MHz
-		.c1( clk_133M )	//	 clk_133M = 40MHz
+		.c0( clk_tmp80M )  //  clk_100M = 25MHz
 	);
-	assign clk_100M = clk_133M;
-//	pll_133 inst_133m(
-//	    .inclk0( clk_100M ),    // pll100
-//		.c0( clk_133M )   	// 	to sdram
-//	);	 	
+	pll_133 inst_133m(
+	    .inclk0( clk_tmp80M ),
+		.c0( clk_100M ),   	// 100MHz
+		.c1( clk_133M  )    // 125MHz
+	);	 	
 	 /**************************************/
 	reset_gen inst_rst(
 		.clk_100	(clk_100M),
@@ -198,7 +198,7 @@ module vga_module
 	// read sdram, rd_sdram_req high means read begins,ack high means read finished 
 	// start when wr_sdram_finish == 1 && vsync negadge
 	reg		wr_en;
-	wire 	rd_en;
+//	wire 	rd_en;
 	/*
 	always@(posedge clk_133M or negedge rst_133)begin
 		if(!rst_133) begin
@@ -216,7 +216,7 @@ module vga_module
 	end
 	*/
 	//  && (rd_sdram_add[21:9]<=400)
-	assign rd_en = ((work_st == W_RDDAT) && (rd_sdram_add[21:9]==0) ) ? 1 : 0;
+//	assign rd_en = ((work_st == W_RDDAT) && (rd_sdram_add[21:9]==0) ) ? 1 : 0;
 	always@(posedge clk_133M or negedge rst_133)begin
 		if(!rst_133) begin
 			wr_en <= 0;
@@ -236,18 +236,20 @@ module vga_module
 		if(!rst_133) begin
 			test_rdsdram <= 0;
 		end
-		else if(work_st == W_RDDAT && rd_en==1)begin
-			case(cnt_work)
-				0 : test_rdsdram[2:0] <= sdram_data[2:0];
-				1 :	test_rdsdram[5:3] <= sdram_data[2:0];
-				2 :	test_rdsdram[8:6] <= sdram_data[2:0];	
-			endcase
+		else if(work_st == W_RDDAT && cnt_work == 0 && rd_sdram_add[21:9]==0) begin
+			test_rdsdram[8:6] <= sdram_data[2:0];	
+		end
+		else if(work_st == W_RDDAT && cnt_work == 1 && rd_sdram_add[21:9]==0) begin
+			test_rdsdram[5:3] <= sdram_data[2:0];	
+		end
+		else if(work_st == W_RDDAT && cnt_work == 2 && rd_sdram_add[21:9]==0) begin
+			test_rdsdram[2:0] <= sdram_data[2:0];	
 		end
 		else if(work_st == W_WRITE && wr_en==1)begin
 			case(cnt_work)
-				1 : test_rdsdram[11:9] <= sdram_data[2:0];
+				3 : test_rdsdram[11:9] <= sdram_data[2:0];
 				2 :	test_rdsdram[14:12] <= sdram_data[2:0];
-				3 :	test_rdsdram[17:15] <= sdram_data[2:0];	
+				1 :	test_rdsdram[17:15] <= sdram_data[2:0];	
 			endcase
 		end
 	end
@@ -267,7 +269,7 @@ module vga_module
 			else begin
 				case(st_rdsdram)
 					0 : begin
-						if(wr_sdram_finishb == 1 &&
+						if( wr_sdram_finishb == 1 &&
 							rd_fifo_used <= 512 &&
 							rd_sdram_add[21:9] < 128) begin
 							st_rdsdram <= 1;

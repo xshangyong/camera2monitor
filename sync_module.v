@@ -23,21 +23,21 @@ module sync_module
 
 	 
 	reg [10:0]Count_H;
-//   resolution 1440*900   frequence 60Hz
-//	   clk_fre = 84.960MHz
+//  resolution 1440*900   frequence 60Hz
+//	   clk_fre = 90MHz
 
-//parameter H_SYN 		= 32;
-//parameter H_BKPORCH 	= 80;
-//parameter H_DATA 		= 1440;
-//parameter H_FTPORCH		= 48;
-//parameter H_TOTAL    	= 1600;
-//
-//
-//parameter V_SYN 		= 6;
-//parameter V_BKPORCH 	= 17;
-//parameter V_DATA 		= 900;
-//parameter V_FTPORCH		= 3;
-//parameter V_TOTAL    	= 926 ;
+parameter H_SYN 		= 32;
+parameter H_BKPORCH 	= 80;
+parameter H_DATA 		= 1440;
+parameter H_FTPORCH		= 48;
+parameter H_TOTAL    	= 1600;
+
+
+parameter V_SYN 		= 6;
+parameter V_BKPORCH 	= 17;
+parameter V_DATA 		= 900;
+parameter V_FTPORCH		= 3;
+parameter V_TOTAL    	= 926 ;
 
 //   resolution 640*480   frequence 60Hz
 //	   clk_fre = 25.175MHz
@@ -55,18 +55,18 @@ module sync_module
 //parameter V_TOTAL    	= 525;
 //   resolution 800*600   frequence 60Hz
 //	   clk_fre = 40MHz
-parameter H_SYN 		= 128;
-parameter H_BKPORCH 	= 88;
-parameter H_DATA 		= 800;
-parameter H_FTPORCH		= 40;
-parameter H_TOTAL    	= 1056;
-
-
-parameter V_SYN 		= 4;
-parameter V_BKPORCH 	= 23;
-parameter V_DATA 		= 600;
-parameter V_FTPORCH		= 1;
-parameter V_TOTAL    	= 625;
+//parameter H_SYN 		= 128;
+//parameter H_BKPORCH 	= 88;
+//parameter H_DATA 		= 800;
+//parameter H_FTPORCH		= 40;
+//parameter H_TOTAL    	= 1056;
+//
+//
+//parameter V_SYN 		= 4;
+//parameter V_BKPORCH 	= 23;
+//parameter V_DATA 		= 600;
+//parameter V_FTPORCH		= 1;
+//parameter V_TOTAL    	= 625;
 	 
 	 
 	 
