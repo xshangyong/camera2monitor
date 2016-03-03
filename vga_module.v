@@ -377,12 +377,19 @@ module vga_module
 	);
 	
 	
+	wire[19:0]	to_dig;
+	assign to_dig[19:0] = test_rdsdram[2:0]+test_rdsdram[5:3]*10+test_rdsdram[8:6]*100+test_rdsdram[11:9]*1000+test_rdsdram[14:12]*10000+test_rdsdram[17:15]*100000;
+	   
+	   
+	   
+	  
+	  
 	
 	 digitron inst_digi
 	(
 		.clk_i(CLK),
 		.rst_i(rst_100),
-		.num_i(test_rdsdram),
+		.num_i(to_dig),
 		.row_o(row_o),
 		.column_o(column_o)
 	);
